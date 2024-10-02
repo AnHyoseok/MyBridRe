@@ -38,6 +38,12 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: BackGround
+    uniqueID: 3545146845
+    locked: 0
+  - name: Player
+    uniqueID: 1018523257
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
