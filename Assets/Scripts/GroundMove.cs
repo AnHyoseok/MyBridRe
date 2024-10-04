@@ -17,11 +17,11 @@ namespace MyBird
         }
         void MoveGround()
         {
-
+            if (GameManager.IsDeath) return;
             transform.Translate(Vector3.left * Time.deltaTime * moveSpeed, Space.World);
-            if (transform.localPosition.x < 8.4f)
+            if (transform.localPosition.x <= -8.4f)
             {
-                transform.localPosition = new Vector3(transform.position.x + 8.4f, transform.position.y, transform.position.z);
+                transform.localPosition = new Vector3(transform.localPosition.x + 8.4f, transform.localPosition.y, transform.localPosition.z);
             }
         }
 
