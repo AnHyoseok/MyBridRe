@@ -20,18 +20,20 @@ namespace MyBird
 
         [SerializeField] private float maxSpawnTimer = 1.05f;
         [SerializeField] private float minSpawnTimer = 0.9f;
-
+        public static float levelTime = 0f;
 
         [SerializeField] private float maxSpawnY = -2.7f;
         [SerializeField] private float minSpawnY = 2f;
 
         private int pipercount;
+        
         #endregion
 
         private void Start()
         {
             //초기화
             countdown = spawnTimer;
+            levelTime = 0f;
         }
 
         void Update()
@@ -48,11 +50,12 @@ namespace MyBird
             }
             countdown -= Time.deltaTime;
 
-            if (GameManager.Score % 5 == 0 && spawnTimer > 0)
-            {
-                SpawnLevel();
-                Debug.Log(minSpawnY);
-            }
+            //if (GameManager.Score % 5 == 0 && GameManager.Score!=0)
+            //{
+            //    SpawnLevel();
+            //    Debug.Log(minSpawnY);
+            //    //한번만실행하게해야됨
+            //}
         }
 
         void SpawnPipe()
@@ -60,7 +63,7 @@ namespace MyBird
             if (GameManager.IsStart == false|| GameManager.IsDeath)
                 return;
             
-            float ran = Random.Range(minSpawnY, maxSpawnY);
+            float ran = Random.Range(minSpawnY- levelTime, maxSpawnY);
 
             Vector3 spawnPosition = new Vector3(SpawnPoint.position.x, ran, SpawnPoint.position.z + 0f);
             SpawnPoint.position = spawnPosition;
@@ -70,10 +73,10 @@ namespace MyBird
             //2~-2.7
             Debug.Log(minSpawnY);
         }
-        private void SpawnLevel()
-        {
-            minSpawnTimer -= 0.05f;
-        }
+        //private void SpawnLevel()
+        //{
+        //    minSpawnTimer -= 0.05f;
+        //}
 
     }
 

@@ -14,6 +14,7 @@ namespace MyBird
         #region Vairables
 
         private Rigidbody2D rb2d;
+        private AudioSource audioSource;
 
         //점프
         [SerializeField] private float jumpForce = 5f;
@@ -35,19 +36,20 @@ namespace MyBird
         public GameObject resultUi;
         public GameObject playUI;
 
-        
-    
+
+
         #endregion
 
         void Start()
         {
             readyUI.SetActive(true);
             rb2d = GetComponent<Rigidbody2D>();
+            audioSource = GetComponent<AudioSource>();
 
         }
         void Update()
         {
-           
+
 
             //키입력
             InputBird();
@@ -74,17 +76,34 @@ namespace MyBird
             //Debug.Log(rb2d.velocity.y);
         }
 
+
         void InputBird()
         {
+
             if (GameManager.IsDeath) return;
+
+#if UNITY_EDITOR
+            //유니티 내에서 실행
             //점프 : 스페이스바 또는 마우스 왼클릭
             keyJump |= Input.GetKeyDown(KeyCode.Space);
             keyJump |= Input.GetMouseButtonDown(0);
+#else
+            //빌드한후에
+            //터치 인풋 처리
+            if (Input.touchCount > 0)
+            {
+                Touch touch = Input.GetTouch(0);
 
+                if (touch.phase == TouchPhase.Began)
+                {
+                    keyJump |= true;
+                }
+            }
+#endif
             if (GameManager.IsStart == false && keyJump)
             {
                 MoveStartBird();
-               
+
             }
         }
 
@@ -135,7 +154,7 @@ namespace MyBird
         public void ReadyBird()
         {
             if (GameManager.IsStart) return;
-     
+
             //위쪽으로 힘을 주어 제자리에 있기
             if (rb2d.velocity.y < 0f)
             {
@@ -148,10 +167,10 @@ namespace MyBird
         void DieBird()
         {
             //두번죽음 방지
-            if(GameManager.IsDeath) return;
+            if (GameManager.IsDeath) return;
 
             Debug.Log("죽음 처리");
-            
+
             GameManager.IsDeath = true;
             resultUi.SetActive(true);
 
@@ -165,8 +184,16 @@ namespace MyBird
             if (GameManager.IsDeath) return;
 
             GameManager.Score++;
-            
-           
+
+            //포인트 흭득 사운드 플레이
+            audioSource.Play();
+
+            //난이도 증가
+            if (GameManager.Score % 3 == 0)
+            {
+                SpawnManager.levelTime += 0.05f;
+            }
+            Debug.Log($"  SpawnManager.levelTime={SpawnManager.levelTime}");
         }
 
         //이동시작시
@@ -183,11 +210,11 @@ namespace MyBird
             if (Collider.tag == "Pipe")
             {
                 DieBird();
-            
+
             }
-            else if(Collider.tag == "Point")
+            else if (Collider.tag == "Point")
             {
-               
+
                 GetPoint();
             }
         }
@@ -197,12 +224,12 @@ namespace MyBird
             if (collision.gameObject.tag == "Ground")
             {
                 DieBird();
-               
+
             }
         }
 
-        
-     
+
+
     }
 
 }
